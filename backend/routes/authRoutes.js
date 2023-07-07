@@ -55,12 +55,48 @@ router.post('/register', async (req, res) => {
     );
 
     // return token
-    res.json({ error: null, msg: 'Successful registration', token: token, userId: newUser._id })
+    res.json({ error: null, msg: 'Successful registration', token: token, userId: newUser._id });
 
   } catch(error) {
     res.status(400).json({ error });
   }
 
 });
+
+// login an user
+router.post('/login', async (req, res) => {
+
+  const email = req.body.email;
+  const password = req.body.password;
+
+  // check if user exists
+  const user = await User.findOne({ email: email });
+
+  if(!user) {
+    return res.status(400).json({ error: "There is no user registered with this email" });
+  }
+
+  // check if password match
+  const checkPassword = await bcrypt.compare(password, user.password);
+
+  if(!checkPassword) {
+    return res.status(400).json({ error: "Invalid password" })
+  }
+
+  // create token
+  const token = jwt.sign(
+    // payload
+    {
+      name: user.name,
+      id: user._id
+    },
+    'ourSecret'
+  );
+
+  // return token
+  res.json({ error: null, msg: 'Successful authentication', token: token, userId: user._id });
+
+});
+
 
 module.exports = router;
