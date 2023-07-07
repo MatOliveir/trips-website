@@ -55,7 +55,7 @@ router.post('/register', async (req, res) => {
     );
 
     // return token
-    res.json({ error: null, msg: 'Successful registration', token: token, userId: newUser._id });
+    res.json({ error: null, msg: 'Successful registration', token: token, userId: newUser._id, name: newUser.name });
 
   } catch(error) {
     res.status(400).json({ error });
@@ -94,7 +94,7 @@ router.post('/login', async (req, res) => {
   );
 
   // return token
-  res.json({ error: null, msg: 'Successful authentication', token: token, userId: user._id });
+  res.json({ error: null, msg: 'Successful authentication', token: token, userId: user._id, name: user.name });
 
 });
 
